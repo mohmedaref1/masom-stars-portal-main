@@ -4,6 +4,10 @@
 
 **URL**: https://lovable.dev/projects/d6a11acc-531d-4b33-866c-f90fd25c830b
 
+## Localization
+
+For an Arabic version of this README, please see [README.ar.md](./README.ar.md).
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
