@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String
+  dob         DateTime? // Date of Birth
+  address     String?
+  phoneNumber String?
+  email       String?   @unique
+  level       String?   // e.g., 'الابتدائي - السنة الأولى'
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  groups      StudentGroup[] // Relation to StudentGroup join table
+  attendances Attendance[]
+  payments    Payment[]
+}
+
+model Teacher {
+  id              String    @id @default(cuid())
+  firstName       String
+  lastName        String
+  subjectTaught   String?
+  phoneNumber     String?
+  email           String?   @unique
+  compensationRate Float?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  groups          Group[]
+}
+
+model Group {
+  id          String    @id @default(cuid())
+  name        String
+  level       String?
+  subject     String?
+  schedule    String?   // e.g., "Mondays 10-12, Wednesdays 10-12"
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  teacher     Teacher   @relation(fields: [teacherId], references: [id])
+  teacherId   String
+  students    StudentGroup[] // Relation to StudentGroup join table
+  sessions    Session[]
+  payments    Payment[]
+}
+
+// Join table for many-to-many relationship between Student and Group
+model StudentGroup {
+  id        String   @id @default(cuid())
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  assignedAt DateTime @default(now())
+
+  @@unique([studentId, groupId]) // Ensure a student is only in a group once
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  date          DateTime
+  time          String?   // e.g., "10:00"
+  duration      Int?      // in minutes
+  topicCovered  String?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  group         Group     @relation(fields: [groupId], references: [id])
+  groupId       String
+  attendances   Attendance[]
+}
+
+model Attendance {
+  id        String    @id @default(cuid())
+  status    String    // e.g., "Present", "Absent", "Late"
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  session   Session   @relation(fields: [sessionId], references: [id])
+  sessionId String
+  student   Student   @relation(fields: [studentId], references: [id])
+  studentId String
+
+  @@unique([sessionId, studentId]) // Ensure one attendance record per student per session
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  amount        Float
+  date          DateTime
+  paymentMethod String?   // e.g., "Cash", "Card", "Transfer"
+  status        String    // e.g., "Paid", "Pending", "Failed"
+  reference     String?   // Optional payment reference
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  student       Student   @relation(fields: [studentId], references: [id])
+  studentId     String
+  group         Group?    @relation(fields: [groupId], references: [id]) // Payment can be for a specific group
+  groupId       String?
+}
+
+model FinancialRecord {
+  id          String    @id @default(cuid())
+  type        String    // "Income" or "Expense"
+  description String
+  amount      Float
+  date        DateTime
+  category    String?   // e.g., "Student Fees", "Teacher Salaries", "Utilities"
+  reference   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
