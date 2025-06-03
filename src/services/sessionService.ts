@@ -7,30 +7,8 @@ export const sessionService = {
   // توليد الحصص تلقائياً للمجموعة
   async generateWeeklySessions(groupId: string, weekday: number, time: string, startDate?: string): Promise<{ success: boolean; sessions?: Session[]; error?: string }> {
     console.log('توليد الحصص الأسبوعية للمجموعة:', { groupId, weekday, time, startDate });
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const sessions: Session[] = [];
-    const currentDate = new Date(startDate || Date.now());
-    
-    // توليد 12 حصة (3 أشهر)
-    for (let i = 0; i < 12; i++) {
-      const sessionDate = new Date(currentDate);
-      sessionDate.setDate(currentDate.getDate() + (i * 7));
-      
-      sessions.push({
-        id: `${groupId}_${i + 1}`,
-        groupId,
-        groupName: 'اسم المجموعة',
-        date: sessionDate.toISOString().split('T')[0],
-        startTime: time,
-        endTime: this.calculateEndTime(time, 90),
-        isActive: false,
-        isCompleted: false
-      });
-    }
-    
-    return { success: true, sessions };
+    // TODO: Implement actual backend integration
+    throw new Error('Not Implemented: Backend integration for generateWeeklySessions is pending.');
   },
 
   // حساب وقت انتهاء الحصة
@@ -45,41 +23,29 @@ export const sessionService = {
 
   // جلب الحصص الأسبوعية
   async getWeeklySessions(startDate: string, endDate: string): Promise<Session[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [
-      {
-        id: '1',
-        groupId: '1',
-        groupName: 'رياضيات المتوسط الأولى',
-        date: '2024-06-03',
-        startTime: '16:00',
-        endTime: '17:30',
-        isActive: true,
-        isCompleted: false
-      }
-    ];
+    console.log('جلب الحصص الأسبوعية بين:', startDate, 'و', endDate);
+    // TODO: Implement actual backend integration
+    throw new Error('Not Implemented: Backend integration for getWeeklySessions is pending.');
   },
 
   // إضافة حصة إضافية
   async addExtraSession(sessionData: Omit<Session, 'id'>): Promise<{ success: boolean; sessionId?: string; error?: string }> {
     console.log('إضافة حصة إضافية:', sessionData);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const sessionId = Date.now().toString();
-    return { success: true, sessionId };
+    // TODO: Implement actual backend integration
+    throw new Error('Not Implemented: Backend integration for addExtraSession is pending.');
   },
 
   // تعديل حصة
   async updateSession(sessionId: string, sessionData: Partial<Session>): Promise<{ success: boolean; error?: string }> {
     console.log('تعديل الحصة:', { sessionId, sessionData });
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true };
+    // TODO: Implement actual backend integration
+    throw new Error('Not Implemented: Backend integration for updateSession is pending.');
   },
 
   // حذف حصة
   async deleteSession(sessionId: string): Promise<{ success: boolean; error?: string }> {
     console.log('حذف الحصة:', sessionId);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true };
+    // TODO: Implement actual backend integration
+    throw new Error('Not Implemented: Backend integration for deleteSession is pending.');
   }
 };

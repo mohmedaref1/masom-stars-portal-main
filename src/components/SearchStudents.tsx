@@ -41,10 +41,11 @@ export function SearchStudents() {
           description: "لم يتم العثور على طلاب يطابقون البحث",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Failed to search students:", error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء البحث",
+        description: error?.message || "حدث خطأ أثناء البحث",
         variant: "destructive"
       });
     } finally {
@@ -58,10 +59,11 @@ export function SearchStudents() {
     try {
       const student = await studentService.getStudentDetails(studentId);
       setSelectedStudent(student);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Failed to get student details:", error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء جلب تفاصيل الطالب",
+        description: error?.message || "حدث خطأ أثناء جلب تفاصيل الطالب",
         variant: "destructive"
       });
     } finally {

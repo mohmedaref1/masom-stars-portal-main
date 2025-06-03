@@ -93,10 +93,11 @@ export function AddStudentForm() {
           variant: "destructive"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Failed to add student:", error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ في الاتصال بالخادم",
+        description: error?.message || "حدث خطأ في الاتصال بالخادم",
         variant: "destructive"
       });
     } finally {

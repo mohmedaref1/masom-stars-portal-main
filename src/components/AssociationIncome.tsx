@@ -92,20 +92,32 @@ export const AssociationIncome = () => {
   const [endDate, setEndDate] = useState<string>('2024-12-31');
   const [summary, setSummary] = useState<FinancialSummary | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchFinancialData = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSummary(null); // Clear previous data
+    setTransactions([]); // Clear previous data
     try {
+      // NOTE: financialService is currently a local mock.
+      // If it were a real imported service, these calls would throw "Not Implemented".
       const summaryData = await financialService.getFinancialSummary(startDate, endDate);
       const transactionsData = await financialService.getTransactions(startDate, endDate);
       setSummary(summaryData);
       setTransactions(transactionsData);
-    } catch (error: any) {
+    } catch (err: any) {
+      console.error("Failed to fetch financial data:", err);
+      setError(err.message || "فشل في جلب البيانات المالية.");
       toast({
         title: "حدث خطأ!",
-        description: "فشل في جلب البيانات المالية.",
+        description: err.message || "فشل في جلب البيانات المالية.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -165,14 +177,31 @@ export const AssociationIncome = () => {
 
         {/* زر جلب البيانات */}
         <div className="text-center mb-8">
-          <Button className="btn-primary" onClick={fetchFinancialData}>
+          <Button className="btn-primary" onClick={fetchFinancialData} disabled={isLoading}>
             <FileText className="w-4 h-4 ml-2" />
-            جلب البيانات المالية
+            {isLoading ? "جارٍ جلب البيانات..." : "جلب البيانات المالية"}
           </Button>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center text-white py-10">جارٍ تحميل البيانات المالية...</div>
+        )}
+
+        {/* Error Display */}
+        {error && !isLoading && (
+          <Card className="card-modern mb-8 bg-red-900/20 border-red-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-red-400">خطأ في تحميل البيانات</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-red-300">{error}</p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* عرض الملخص المالي */}
-        {summary && (
+        {!isLoading && !error && summary && (
           <Card className="card-modern mb-8">
             <CardHeader>
               <CardTitle className="text-xl text-white">
@@ -275,57 +304,69 @@ export const AssociationIncome = () => {
         </Card>
 
         {/* جدول المعاملات */}
-        <Card className="card-modern">
-          <CardHeader>
-            <CardTitle className="text-xl text-white">تفاصيل المعاملات</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-700">
-                <thead>
-                  <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                      التاريخ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                      النوع
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                      الفئة
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                      الوصف
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                      المبلغ
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {transaction.date}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {transaction.type === 'income' ? 'إيراد' : 'مصروف'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {transaction.category}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-400">
-                        {transaction.description}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {transaction.amount.toLocaleString()} ل.س
-                      </td>
+        {!isLoading && !error && transactions.length > 0 && (
+          <Card className="card-modern">
+            <CardHeader>
+              <CardTitle className="text-xl text-white">تفاصيل المعاملات</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-700">
+                  <thead>
+                    <tr>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        التاريخ
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        النوع
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        الفئة
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        الوصف
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        المبلغ
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-gray-800 divide-y divide-gray-700">
+                    {transactions.map((transaction) => (
+                      <tr key={transaction.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          {transaction.date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          {transaction.type === 'income' ? 'إيراد' : 'مصروف'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          {transaction.category}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-400">
+                          {transaction.description}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          {transaction.amount.toLocaleString()} ل.س
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {!isLoading && !error && !summary && transactions.length === 0 && (
+           <Card className="card-modern text-center py-12">
+            <div className="text-gray-400 mb-4">
+              <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">لا توجد بيانات مالية للعرض</h3>
+              <p>الرجاء تحديد فترة زمنية والضغط على "جلب البيانات المالية".</p>
             </div>
-          </CardContent>
-        </Card>
+          </Card>
+        )}
       </div>
     </div>
   );

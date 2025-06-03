@@ -51,9 +51,10 @@ export function AttendanceSystem() {
       }
       
       setStudentId('');
-    } catch (error) {
-      console.error('خطأ في تسجيل الحضور:', error);
-      toast.error('حدث خطأ في تسجيل الحضور');
+    } catch (err: any) {
+      console.error('خطأ في تسجيل الحضور (recordAttendance):', err);
+      toast.error(err.message || 'حدث خطأ في تسجيل الحضور');
+      setLastScanResult({ success: false, message: err.message || 'فشل الاتصال بالخادم'});
     } finally {
       setIsScanning(false);
     }
@@ -75,9 +76,10 @@ export function AttendanceSystem() {
           toast.warning(`تم تسجيل حضور ${result.studentName} - لم يتم الدفع`);
         }
       }
-    } catch (error) {
-      console.error('خطأ في تسجيل الحضور:', error);
-      toast.error('حدث خطأ في تسجيل الحضور');
+    } catch (err: any) {
+      console.error('خطأ في تسجيل الحضور (recordAttendanceForGroup):', err);
+      toast.error(err.message || 'حدث خطأ في تسجيل الحضور للمجموعة');
+      setLastScanResult({ success: false, message: err.message || 'فشل الاتصال بالخادم'});
     } finally {
       setIsScanning(false);
     }

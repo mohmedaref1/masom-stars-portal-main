@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export function GroupsManagement() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +20,10 @@ export function GroupsManagement() {
     try {
       const data = await groupService.getAllGroups();
       setGroups(data);
-    } catch (error) {
-      console.error('خطأ في جلب المجموعات:', error);
+      setError(null); // Clear any previous error
+    } catch (err: any) {
+      console.error('خطأ في جلب المجموعات:', err);
+      setError(err.message || 'فشل تحميل المجموعات. الخدمة غير متوفرة حالياً.');
     } finally {
       setLoading(false);
     }
@@ -54,7 +57,24 @@ export function GroupsManagement() {
           </Button>
         </div>
 
-        {groups.length === 0 ? (
+        {error && (
+          <Card className="card-modern text-center py-12 bg-red-900/20 border-red-700">
+            <div className="text-red-400 mb-4">
+              <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">خطأ في تحميل المجموعات</h3>
+              <p>{error}</p>
+            </div>
+            <Button
+              onClick={loadGroups}
+              className="btn-secondary"
+              disabled={loading}
+            >
+              {loading ? 'جاري المحاولة...' : 'حاول مرة أخرى'}
+            </Button>
+          </Card>
+        )}
+
+        {!error && groups.length === 0 && !loading && (
           <Card className="card-modern text-center py-12">
             <div className="text-gray-400 mb-4">
               <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -68,7 +88,9 @@ export function GroupsManagement() {
               إضافة مجموعة جديدة
             </Button>
           </Card>
-        ) : (
+        )}
+
+        {!error && groups.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {groups.map(group => (
               <Card key={group.id} className="card-modern">

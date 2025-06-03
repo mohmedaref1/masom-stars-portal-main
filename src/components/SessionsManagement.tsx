@@ -13,6 +13,7 @@ export function SessionsManagement() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [weekStart, setWeekStart] = useState('');
 
@@ -41,12 +42,13 @@ export function SessionsManagement() {
 
   const loadData = async () => {
     try {
-      const [groupsData] = await Promise.all([
-        groupService.getAllGroups()
-      ]);
+      const groupsData = await groupService.getAllGroups();
       setGroups(groupsData);
-    } catch (error) {
-      console.error('خطأ في جلب البيانات:', error);
+      setError(null); // Clear error related to groups
+    } catch (err: any) {
+      console.error('خطأ في جلب بيانات المجموعات:', err);
+      setError(err.message || 'فشل تحميل بيانات المجموعات.');
+      // Do not set groups to empty, keep stale data if any, or let UI handle empty groups
     }
   };
 
@@ -54,6 +56,7 @@ export function SessionsManagement() {
     if (!weekStart) return;
     
     setLoading(true);
+    setError(null); // Clear previous session errors
     try {
       const startDate = new Date(weekStart);
       const endDate = new Date(startDate);
@@ -64,8 +67,10 @@ export function SessionsManagement() {
         endDate.toISOString().split('T')[0]
       );
       setSessions(data);
-    } catch (error) {
-      console.error('خطأ في جلب الحصص:', error);
+    } catch (err: any) {
+      console.error('خطأ في جلب الحصص:', err);
+      setSessions([]); // Clear sessions on error
+      setError(err.message || 'فشل تحميل الحصص الأسبوعية.');
     } finally {
       setLoading(false);
     }
@@ -101,9 +106,9 @@ export function SessionsManagement() {
       } else {
         toast.error(result.error || 'فشل في إضافة الحصة');
       }
-    } catch (error) {
-      console.error('خطأ في إضافة الحصة:', error);
-      toast.error('حدث خطأ غير متوقع');
+    } catch (err: any) {
+      console.error('خطأ في إضافة الحصة:', err);
+      toast.error(err.message || 'حدث خطأ غير متوقع aoإضافة الحصة');
     }
   };
 
@@ -118,9 +123,9 @@ export function SessionsManagement() {
       } else {
         toast.error(result.error || 'فشل في حذف الحصة');
       }
-    } catch (error) {
-      console.error('خطأ في حذف الحصة:', error);
-      toast.error('حدث خطأ غير متوقع');
+    } catch (err: any) {
+      console.error('خطأ في حذف الحصة:', err);
+      toast.error(err.message || 'حدث خطأ غير متوقع عند حذف الحصة');
     }
   };
 
@@ -152,16 +157,6 @@ export function SessionsManagement() {
     setWeekStart(current.toISOString().split('T')[0]);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 p-6">
-        <div className="flex items-center justify-center">
-          <div className="text-white text-lg">جارٍ تحميل الحصص...</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -174,6 +169,7 @@ export function SessionsManagement() {
           <Button
             onClick={() => setShowAddForm(true)}
             className="btn-primary flex items-center gap-2"
+            disabled={groups.length === 0 && !error} // Disable if no groups loaded (and no error fetching them)
           >
             <Plus className="w-5 h-5" />
             إضافة حصة إضافية
@@ -187,84 +183,131 @@ export function SessionsManagement() {
               onClick={() => changeWeek('prev')}
               variant="outline"
               className="border-gray-600 text-gray-300"
+              disabled={loading}
             >
               الأسبوع السابق
             </Button>
             
             <div className="text-white text-lg font-semibold">
-              الأسبوع من {new Date(weekStart).toLocaleDateString('ar-DZ')} إلى {new Date(new Date(weekStart).getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('ar-DZ')}
+              {weekStart ?
+                `الأسبوع من ${new Date(weekStart).toLocaleDateString('ar-DZ')} إلى ${new Date(new Date(weekStart).getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('ar-DZ')}`
+                : "..."
+              }
             </div>
             
             <Button
               onClick={() => changeWeek('next')}
               variant="outline"
               className="border-gray-600 text-gray-300"
+              disabled={loading}
             >
               الأسبوع التالي
             </Button>
           </div>
         </Card>
 
-        {/* الجدول الأسبوعي */}
-        <div className="grid grid-cols-7 gap-4 mb-6">
-          {getWeekDays().map(day => (
-            <Card key={day.date} className="card-modern">
-              <div className="p-4">
-                <div className="text-center mb-4">
-                  <h3 className="text-white font-semibold">{day.label}</h3>
-                  <p className="text-gray-400 text-sm">{day.dayNum}</p>
-                </div>
-                
-                <div className="space-y-2">
-                  {getSessionsForDay(day.date).map(session => (
-                    <div
-                      key={session.id}
-                      className={`p-2 rounded text-xs border ${
-                        session.isActive 
-                          ? 'border-green-500 bg-green-900/20 text-green-300'
-                          : session.isCompleted
-                          ? 'border-gray-500 bg-gray-800/50 text-gray-400'
-                          : 'border-blue-500 bg-blue-900/20 text-blue-300'
-                      }`}
-                    >
-                      <div className="font-semibold">{session.groupName}</div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{session.startTime}</span>
+        {loading && (
+           <div className="flex items-center justify-center py-10">
+             <div className="text-white text-lg">جارٍ تحميل الحصص...</div>
+           </div>
+        )}
+
+        {error && !loading && (
+          <Card className="card-modern text-center py-12 bg-red-900/20 border-red-700">
+            <div className="text-red-400 mb-4">
+              <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">خطأ في تحميل البيانات</h3>
+              <p>{error}</p>
+            </div>
+            <Button
+              onClick={() => { weekStart ? loadWeeklySessions() : loadData(); }}
+              className="btn-secondary"
+            >
+              حاول مرة أخرى
+            </Button>
+          </Card>
+        )}
+
+        {!loading && !error && sessions.length === 0 && weekStart && (
+           <Card className="card-modern text-center py-12">
+            <div className="text-gray-400 mb-4">
+              <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold mb-2">لا توجد حصص مجدولة</h3>
+              <p>لا توجد حصص مجدولة لهذا الأسبوع. يمكنك إضافة حصص يدوياً.</p>
+            </div>
+          </Card>
+        )}
+
+        {!loading && !error && sessions.length > 0 && (
+          <div className="grid grid-cols-7 gap-4 mb-6">
+            {getWeekDays().map(day => (
+              <Card key={day.date} className="card-modern">
+                <div className="p-4">
+                  <div className="text-center mb-4">
+                    <h3 className="text-white font-semibold">{day.label}</h3>
+                    <p className="text-gray-400 text-sm">{day.dayNum}</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    {getSessionsForDay(day.date).map(session => (
+                      <div
+                        key={session.id}
+                        className={`p-2 rounded text-xs border ${
+                          session.isActive
+                            ? 'border-green-500 bg-green-900/20 text-green-300'
+                            : session.isCompleted
+                            ? 'border-gray-500 bg-gray-800/50 text-gray-400'
+                            : 'border-blue-500 bg-blue-900/20 text-blue-300'
+                        }`}
+                      >
+                        <div className="font-semibold">{session.groupName}</div>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{session.startTime}</span>
+                        </div>
+
+                        <div className="flex gap-1 mt-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-6 px-2 text-xs border-gray-600"
+                            onClick={() => {/* تعديل الحصة - سيتم التعامل معها لاحقاً */}}
+                            disabled // تعطيل مؤقت حتى يتم التعامل مع الأخطاء المحتملة
+                          >
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-6 px-2 text-xs border-red-600 text-red-400"
+                            onClick={() => handleDeleteSession(session.id)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
-                      
-                      <div className="flex gap-1 mt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-6 px-2 text-xs border-gray-600"
-                          onClick={() => {/* تعديل الحصة */}}
-                        >
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-6 px-2 text-xs border-red-600 text-red-400"
-                          onClick={() => handleDeleteSession(session.id)}
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                    {getSessionsForDay(day.date).length === 0 && (
+                      <p className="text-gray-500 text-center text-xs py-2">لا حصص</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* نموذج إضافة حصة إضافية */}
         {showAddForm && (
           <Card className="card-modern">
             <div className="p-6">
               <h3 className="text-xl font-bold text-white mb-4">إضافة حصة إضافية</h3>
-              
+              {groups.length === 0 && (
+                <p className="text-yellow-400 text-sm mb-4">
+                  لا يمكن إضافة حصص حالياً. قد يكون السبب عدم تحميل المجموعات بنجاح أو عدم وجود مجموعات.
+                  {error && ` الخطأ: ${error}`}
+                </p>
+              )}
               <form onSubmit={handleAddExtraSession} className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -275,6 +318,7 @@ export function SessionsManagement() {
                       onChange={(e) => setNewSession(prev => ({ ...prev, groupId: e.target.value }))}
                       className="input-modern w-full"
                       required
+                      disabled={groups.length === 0}
                     >
                       <option value="">اختر المجموعة</option>
                       {groups.map(group => (

@@ -47,15 +47,25 @@ export function AddGroupForm() {
   }, [formData.subject]);
 
   const loadTeachersBySubject = async () => {
+    // Placeholder for future API call to fetch teachers by subject
+    // For now, using mock data and simulating an async call
+    setLoading(true); // Simulate loading state for teacher fetching
     try {
-      // هنا يجب جلب المعلمين من الباك إند حسب المادة
-      // مؤقتاً سنستخدم بيانات وهمية
-      setTeachers([
-        { id: '1', fullName: 'أحمد محمد', subject: formData.subject },
-        { id: '2', fullName: 'فاطمة علي', subject: formData.subject }
-      ]);
-    } catch (error) {
-      console.error('خطأ في جلب المعلمين:', error);
+      // Replace with actual teacherService.getTeachersBySubject(formData.subject) call
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+      // Mocked data, assuming this would come from the service
+      const mockTeachers = [
+        { id: '1', fullName: `أ. أحمد (مادة ${formData.subject})`, subject: formData.subject },
+        { id: '2', fullName: `أ. فاطمة (مادة ${formData.subject})`, subject: formData.subject }
+      ];
+      setTeachers(mockTeachers);
+      // setError(''); // Clear previous errors if successful
+    } catch (err: any) {
+      console.error('خطأ في جلب المعلمين:', err);
+      setError(err.message || 'فشل في تحميل قائمة المعلمين لهذه المادة.');
+      setTeachers([]); // Clear teachers list on error
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -148,9 +158,9 @@ export function AddGroupForm() {
       });
       setTeachers([]);
 
-    } catch (error) {
-      console.error('خطأ في إضافة المجموعة:', error);
-      setError('حدث خطأ غير متوقع');
+    } catch (err: any) {
+      console.error('خطأ في إضافة المجموعة أو توليد الحصص:', err);
+      setError(err.message || 'حدث خطأ غير متوقع أثناء معالجة الطلب.');
     } finally {
       setLoading(false);
     }
