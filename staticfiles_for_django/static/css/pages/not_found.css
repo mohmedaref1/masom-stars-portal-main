@@ -1,0 +1,39 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: sans-serif; /* Basic font */
+}
+
+.not-found-container {
+    min-height: 100vh; /* min-h-screen */
+    display: flex;
+    align-items: center; /* items-center */
+    justify-content: center; /* justify-center */
+    background-color: #f7fafc; /* bg-gray-100 */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.title {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: bold; /* font-bold */
+    margin-bottom: 1rem; /* mb-4 */
+    color: #2d3748; /* Default dark gray, assuming no specific color in original */
+}
+
+.message {
+    font-size: 1.25rem; /* text-xl */
+    color: #718096; /* text-gray-600 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.home-link {
+    color: #3b82f6; /* text-blue-500 */
+    text-decoration: underline;
+}
+
+.home-link:hover {
+    color: #1d4ed8; /* hover:text-blue-700 */
+}

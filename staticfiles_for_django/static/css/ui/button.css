@@ -1,0 +1,115 @@
+/* General button styles (from cva base) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* gap-2 */
+  white-space: nowrap;
+  border-radius: 0.375rem; /* rounded-md */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  /* For focus-visible, a general outline style can be a fallback.
+     Specific ring styles are harder to replicate without Tailwind's exact ring utilities. */
+  outline: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid blue; /* Placeholder for focus-visible:ring-2 focus-visible:ring-ring */
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btn svg {
+  pointer-events: none;
+  width: 1rem; /* size-4 */
+  height: 1rem; /* size-4 */
+  flex-shrink: 0; /* shrink-0 */
+}
+
+/* Variants */
+.btn-default {
+  background-color: #007bff; /* bg-primary (placeholder) */
+  color: white; /* text-primary-foreground (placeholder) */
+}
+.btn-default:hover {
+  background-color: #0056b3; /* hover:bg-primary/90 (placeholder) */
+}
+
+.btn-destructive {
+  background-color: #dc3545; /* bg-destructive (placeholder) */
+  color: white; /* text-destructive-foreground (placeholder) */
+}
+.btn-destructive:hover {
+  background-color: #c82333; /* hover:bg-destructive/90 (placeholder) */
+}
+
+.btn-outline {
+  border: 1px solid #ced4da; /* border border-input (placeholder) */
+  background-color: transparent; /* bg-background (placeholder, assuming it's transparent or white) */
+  color: #007bff; /* Default text color for outline buttons, can be adjusted */
+}
+.btn-outline:hover {
+  background-color: #f8f9fa; /* hover:bg-accent (placeholder) */
+  color: #0056b3; /* hover:text-accent-foreground (placeholder) */
+}
+
+.btn-secondary {
+  background-color: #6c757d; /* bg-secondary (placeholder) */
+  color: white; /* text-secondary-foreground (placeholder) */
+}
+.btn-secondary:hover {
+  background-color: #5a6268; /* hover:bg-secondary/80 (placeholder) */
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: #007bff; /* Default text color for ghost buttons */
+}
+.btn-ghost:hover {
+  background-color: #f8f9fa; /* hover:bg-accent (placeholder) */
+  color: #0056b3; /* hover:text-accent-foreground (placeholder) */
+}
+
+.btn-link {
+  color: #007bff; /* text-primary (placeholder) */
+  text-decoration: underline;
+  text-underline-offset: 4px; /* underline-offset-4 */
+}
+.btn-link:hover {
+  text-decoration: underline; /* hover:underline */
+}
+
+/* Sizes */
+.btn-size-default {
+  height: 2.5rem; /* h-10 */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem; /* px-4 */
+  padding-top: 0.5rem; /* py-2 */
+  padding-bottom: 0.5rem; /* py-2 */
+}
+
+.btn-size-sm {
+  height: 2.25rem; /* h-9 */
+  padding-left: 0.75rem; /* px-3 */
+  padding-right: 0.75rem; /* px-3 */
+  border-radius: 0.375rem; /* rounded-md, already in .btn but can be overridden if size needs different rounding */
+}
+
+.btn-size-lg {
+  height: 2.75rem; /* h-11 */
+  padding-left: 2rem; /* px-8 */
+  padding-right: 2rem; /* px-8 */
+  border-radius: 0.375rem; /* rounded-md */
+}
+
+.btn-size-icon {
+  height: 2.5rem; /* h-10 */
+  width: 2.5rem; /* w-10 */
+}

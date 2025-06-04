@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مدرسة معصم</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/ui/card.css">
+    <link rel="stylesheet" href="/static/css/ui/button.css">
+    <link rel="stylesheet" href="/static/css/pages/index.css">
+</head>
+<body>
+    <div class="index-page-container">
+        <div class="max-width-container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">نظام إدارة مدرسة معصم</h1>
+                <p class="welcome-subtitle">جمعية النجوم الثقافية</p>
+                <p class="welcome-description">نظام شامل لإدارة الطلاب والمعلمين والمدفوعات</p>
+            </div>
+
+            <!-- Feature Cards Section -->
+            <div class="features-grid">
+                <!-- Feature 1: Add Student -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-blue-purple">
+                            <span class="icon-placeholder">➕</span> <!-- Placeholder for Plus icon -->
+                        </div>
+                        <h3 class="card-title feature-title">إضافة طالب جديد</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">تسجيل طالب جديد في النظام</p>
+                        <a href="/add-student" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 2: Search Students -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-green-teal">
+                            <span class="icon-placeholder">🔍</span>
+                        </div>
+                        <h3 class="card-title feature-title">البحث عن الطلاب</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">البحث في قاعدة بيانات الطلاب</p>
+                        <a href="/search-students" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 3: Add Teacher -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-orange-red">
+                            <span class="icon-placeholder">🧑‍🏫</span> <!-- Placeholder for Book/Teacher icon -->
+                        </div>
+                        <h3 class="card-title feature-title">إضافة معلم جديد</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">تسجيل معلم جديد في النظام</p>
+                        <a href="/add-teacher" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 4: Groups Management -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-purple-pink">
+                            <span class="icon-placeholder">👥</span>
+                        </div>
+                        <h3 class="card-title feature-title">إدارة المجموعات</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">إنشاء وإدارة المجموعات الدراسية</p>
+                        <a href="/groups" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 5: Sessions Management -->
+                <div class="card card-modern feature-card">
+                     <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-indigo-blue">
+                            <span class="icon-placeholder">📅</span>
+                        </div>
+                        <h3 class="card-title feature-title">إدارة الحصص</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">تنظيم جدول الحصص والمواعيد</p>
+                        <a href="/sessions" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 6: Attendance System -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-cyan-blue">
+                            <span class="icon-placeholder">🎓</span>
+                        </div>
+                        <h3 class="card-title feature-title">تسجيل الحضور</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">متابعة حضور وغياب الطلاب</p>
+                        <a href="/attendance" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 7: Payment Management -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-emerald-green">
+                            <span class="icon-placeholder">💳</span>
+                        </div>
+                        <h3 class="card-title feature-title">إدارة المدفوعات</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">متابعة مدفوعات الطلاب</p>
+                        <a href="/payments" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 8: Teacher Compensation -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-yellow-orange">
+                            <span class="icon-placeholder">💰</span>
+                        </div>
+                        <h3 class="card-title feature-title">تعويضات المعلمين</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">حساب وإدارة تعويضات المعلمين</p>
+                        <a href="/teacher-compensation" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 9: Association Income -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-rose-pink">
+                            <span class="icon-placeholder">📈</span>
+                        </div>
+                        <h3 class="card-title feature-title">مداخيل الجمعية</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">تقارير مالية وأرباح الجمعية</p>
+                        <a href="/association-income" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+                <!-- Feature 10: Student Group Registration -->
+                <div class="card card-modern feature-card">
+                    <div class="card-header">
+                        <div class="feature-icon-wrapper bg-gradient-violet-purple">
+                            <span class="icon-placeholder">➕👤</span>
+                        </div>
+                        <h3 class="card-title feature-title">تسجيل في المجموعات</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="feature-description">ربط الطلاب بالمجموعات</p>
+                        <a href="/student-groups" class="btn btn-primary feature-button">ابدأ الآن</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Section -->
+            <div class="card card-modern system-info-section">
+                <div class="card-header">
+                    <h2 class="card-title system-info-title">نظام إدارة شامل ومتكامل</h2>
+                </div>
+                <div class="card-content">
+                    <div class="system-info-grid">
+                        <div class="system-info-item">
+                            <div class="info-icon-wrapper bg-blue-500"><span class="icon-placeholder">👥</span></div>
+                            <h3 class="info-item-title">إدارة الطلاب</h3>
+                            <p class="info-item-description">تسجيل ومتابعة بيانات الطلاب بشكل شامل</p>
+                        </div>
+                        <div class="system-info-item">
+                            <div class="info-icon-wrapper bg-green-500"><span class="icon-placeholder">💰</span></div>
+                            <h3 class="info-item-title">النظام المالي</h3>
+                            <p class="info-item-description">إدارة المدفوعات والتعويضات والتقارير المالية</p>
+                        </div>
+                        <div class="system-info-item">
+                            <div class="info-icon-wrapper bg-purple-500"><span class="icon-placeholder">📅</span></div>
+                            <h3 class="info-item-title">إدارة الحصص</h3>
+                            <p class="info-item-description">تنظيم الجداول ومتابعة الحضور والغياب</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

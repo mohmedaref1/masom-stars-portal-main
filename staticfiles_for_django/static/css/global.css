@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Using direct hex/rgb values for now, as mapping from HSL variables in index.css without context is complex.
+     These would ideally be the exact compiled values from Tailwind based on index.css theme.
+     For now, using common values for dark theme. */
+  --background: #111827; /* approx bg-gray-900 / var(--background: 222.2 84% 4.9%;) */
+  --foreground: #f3f4f6; /* approx text-gray-100 / var(--foreground: 210 40% 98%;) */
+
+  --card: #1f2937; /* approx bg-gray-800 / var(--card: 222.2 84% 4.9%;) */
+  --card-foreground: #f3f4f6; /* var(--card-foreground: 210 40% 98%;) */
+
+  --popover: #1f2937;
+  --popover-foreground: #f3f4f6;
+
+  --primary: #3b82f6; /* approx blue-500 / var(--primary: 217.2 91.2% 59.8%;) */
+  --primary-foreground: #ffffff; /* var(--primary-foreground: 222.2 47.4% 11.2%; typically white for dark buttons) */
+
+  --secondary: #4b5563; /* approx gray-600 / var(--secondary: 217.2 32.6% 17.5%;) */
+  --secondary-foreground: #f3f4f6; /* var(--secondary-foreground: 210 40% 98%;) */
+
+  --muted: #4b5563;
+  --muted-foreground: #9ca3af; /* approx gray-400 / var(--muted-foreground: 215 20.2% 65.1%;) */
+
+  --accent: #374151; /* approx gray-700 / var(--accent: 217.2 32.6% 17.5%;) */
+  --accent-foreground: #f3f4f6; /* var(--accent-foreground: 210 40% 98%;) */
+
+  --destructive: #ef4444; /* approx red-500 / var(--destructive: 0 62.8% 30.6%;) */
+  --destructive-foreground: #f3f4f6; /* var(--destructive-foreground: 210 40% 98%;) */
+
+  --border: #374151; /* approx gray-700 / var(--border: 217.2 32.6% 17.5%;) */
+  --input: #374151;  /* var(--input: 217.2 32.6% 17.5%;) */
+  --ring: #60a5fa; /* approx blue-400 / var(--ring: 212.7 26.8% 83.9%;) */
+
+  --radius: 0.5rem; /* var(--radius: 0.5rem;) */
+}
+
+* {
+  border-color: var(--border);
+  direction: rtl;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Noto Sans Arabic', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  direction: rtl;
+}
+
+/* Basic link styling */
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}

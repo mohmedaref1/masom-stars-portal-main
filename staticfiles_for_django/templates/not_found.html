@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <link rel="stylesheet" href="/static/css/pages/not_found.css">
+    <!-- Link to a global stylesheet if one will be created -->
+    <!-- <link rel="stylesheet" href="/static/css/global.css"> -->
+</head>
+<body>
+    <div class="not-found-container">
+        <div class="text-center">
+            <h1 class="title">404</h1>
+            <p class="message">Oops! Page not found</p>
+            <a href="/" class="home-link">Return to Home</a>
+        </div>
+    </div>
+    <script>
+        // Optional: Replicate console logging
+        console.error(
+            "404 Error: User attempted to access non-existent route:",
+            window.location.pathname
+        );
+    </script>
+</body>
+</html>
