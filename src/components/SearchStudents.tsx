@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { studentService, type StudentSearchResult, type Student } from '@/services/studentService';
-import { ArrowRight, Search, User, Eye, Calendar, Phone, CreditCard } from 'lucide-react';
+import { ArrowRight, Search, User, Eye, Calendar, Phone, CreditCard, BookOpen } from 'lucide-react'; // Added BookOpen
 
 export function SearchStudents() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,11 +72,17 @@ export function SearchStudents() {
   return (
     <div className="min-h-screen bg-gray-900 p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-3 mb-8"> {/* Existing Back to Home link container */}
           <a href="/" className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
             <ArrowRight className="w-5 h-5" />
             <span>العودة للرئيسية</span>
           </a>
+        </div>
+
+        {/* Page Header */}
+        <div className="mb-8"> {/* Consistent with other mb-8, or mb-6 from GroupsManagement */}
+          <h1 className="text-3xl font-bold text-white mb-2">قائمة الطلاب</h1>
+          <p className="text-gray-300">عرض وبحث تفاصيل الطلاب المسجلين</p>
         </div>
 
         {/* نموذج البحث */}
@@ -207,11 +213,14 @@ export function SearchStudents() {
 
                 {/* البيانات الأكاديمية والمالية */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">البيانات الأكاديمية</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">البيانات الأكاديمية والمالية</h3> {/* Title updated */}
                   
-                  <div className="p-4 bg-gray-800 rounded-lg">
-                    <p className="text-sm text-gray-400 mb-2">المستوى الدراسي</p>
-                    <p className="text-white font-medium text-lg">{selectedStudent.level}</p>
+                  <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg"> {/* Standardized layout */}
+                    <BookOpen className="w-5 h-5 text-blue-400" />
+                    <div>
+                      <p className="text-sm text-gray-400">المستوى الدراسي</p>
+                      <p className="text-white font-medium">{selectedStudent.level}</p> {/* Removed text-lg to be consistent with other values */}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg">
@@ -224,9 +233,12 @@ export function SearchStudents() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gray-800 rounded-lg">
-                    <p className="text-sm text-gray-400 mb-2">تاريخ التسجيل</p>
-                    <p className="text-white font-medium">{selectedStudent.registrationDate}</p>
+                  <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg"> {/* Standardized layout */}
+                    <Calendar className="w-5 h-5 text-purple-400" /> {/* Re-used Calendar icon */}
+                    <div>
+                      <p className="text-sm text-gray-400">تاريخ التسجيل</p>
+                      <p className="text-white font-medium">{new Date(selectedStudent.registrationDate).toLocaleDateString('ar-DZ')}</p> {/* Date formatting */}
+                    </div>
                   </div>
                 </div>
               </div>

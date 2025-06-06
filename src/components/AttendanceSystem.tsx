@@ -14,6 +14,7 @@ export function AttendanceSystem() {
   const [isScanning, setIsScanning] = useState(false);
   const [showGroupSelection, setShowGroupSelection] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentScannedStudentIdForSelection, setCurrentScannedStudentIdForSelection] = useState<string | null>(null); // Added state
 
   // تحديث الوقت كل ثانية
   useEffect(() => {
@@ -36,6 +37,10 @@ export function AttendanceSystem() {
 
     try {
       const result = await attendanceService.recordAttendance(scannedId);
+      // Store studentId if group selection is needed
+      if (result.conflictingGroups) {
+        setCurrentScannedStudentIdForSelection(scannedId);
+      }
       setLastScanResult(result);
       
       if (result.success) {
@@ -50,7 +55,7 @@ export function AttendanceSystem() {
         toast.error(result.message);
       }
       
-      setStudentId('');
+      setStudentId(''); // Clear input field regardless
     } catch (error) {
       console.error('خطأ في تسجيل الحضور:', error);
       toast.error('حدث خطأ في تسجيل الحضور');
@@ -60,11 +65,16 @@ export function AttendanceSystem() {
   };
 
   const handleGroupSelection = async (groupId: string) => {
-    if (!lastScanResult?.conflictingGroups || !studentId) return;
+    if (!lastScanResult?.conflictingGroups || !currentScannedStudentIdForSelection) {
+      toast.error("خطأ: لم يتم تحديد الطالب لاختيار المجموعة.");
+      setIsScanning(false); // Ensure isScanning is reset
+      setShowGroupSelection(false); // Hide selection options
+      return;
+    }
 
     setIsScanning(true);
     try {
-      const result = await attendanceService.recordAttendanceForGroup(studentId, groupId);
+      const result = await attendanceService.recordAttendanceForGroup(currentScannedStudentIdForSelection, groupId);
       setLastScanResult(result);
       setShowGroupSelection(false);
       
@@ -74,12 +84,15 @@ export function AttendanceSystem() {
         } else {
           toast.warning(`تم تسجيل حضور ${result.studentName} - لم يتم الدفع`);
         }
+      } else { // Handle cases where recordAttendanceForGroup itself might fail (e.g., student not in group after all)
+        toast.error(result.message || 'فشل تسجيل الحضور للمجموعة المختارة');
       }
     } catch (error) {
-      console.error('خطأ في تسجيل الحضور:', error);
-      toast.error('حدث خطأ في تسجيل الحضور');
+      console.error('خطأ في تسجيل الحضور للمجموعة:', error);
+      toast.error('حدث خطأ في تسجيل الحضور للمجموعة');
     } finally {
       setIsScanning(false);
+      setCurrentScannedStudentIdForSelection(null); // Clear the stored student ID
     }
   };
 

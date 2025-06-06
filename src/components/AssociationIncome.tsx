@@ -4,18 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, TrendingDown, DollarSign, Users, Calendar, FileText } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, TrendingDown, DollarSign, Users, Calendar, FileText, Percent } from 'lucide-react'; // Added Percent
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from 'recharts'; // Added Legend for new chart
 import { useToast } from "@/hooks/use-toast";
 import { BackToHomeButton } from "./BackToHomeButton";
 
 // واجهات البيانات
+interface IncomeExpenseTrendItem {
+  month: string;
+  income: number;
+  expenses: number;
+}
+
 interface FinancialSummary {
   totalIncome: number;
   totalExpenses: number;
   netIncome: number;
   incomeBreakdown: { [key: string]: number };
   expenseBreakdown: { [key: string]: number };
+  incomeExpenseTrend: IncomeExpenseTrendItem[]; // Added for new chart
   period: {
     startDate: string;
     endDate: string;
@@ -35,10 +42,34 @@ interface Transaction {
 const financialService = {
   async getFinancialSummary(startDate: string, endDate: string): Promise<FinancialSummary> {
     // هنا يمكنك استبدال البيانات الوهمية ببيانات حقيقية من API
+    // Simulating data based on startDate and endDate to show some variation
+    const startMonth = new Date(startDate).getMonth();
+    const endMonth = new Date(endDate).getMonth();
+    const currentYear = new Date(startDate).getFullYear();
+
+    const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    const trendData: IncomeExpenseTrendItem[] = [];
+
+    for (let i = 0; i < 6; i++) { // Generate 6 months of data for example
+        const monthIndex = (startMonth + i) % 12;
+        const income = Math.floor(Math.random() * 20000) + 40000; // Random income
+        const expenses = Math.floor(Math.random() * 15000) + 20000; // Random expenses
+        trendData.push({
+            month: `${months[monthIndex]} ${currentYear}`,
+            income: income,
+            expenses: expenses,
+        });
+    }
+
+    const totalIncomeFromTrend = trendData.reduce((acc, item) => acc + item.income, 0);
+    const totalExpensesFromTrend = trendData.reduce((acc, item) => acc + item.expenses, 0);
+
+
     return {
-      totalIncome: 75000,
-      totalExpenses: 45000,
-      netIncome: 30000,
+      totalIncome: totalIncomeFromTrend || 75000, // Fallback if trend data is empty
+      totalExpenses: totalExpensesFromTrend || 45000,
+      netIncome: (totalIncomeFromTrend - totalExpensesFromTrend) || 30000,
+      incomeExpenseTrend: trendData,
       incomeBreakdown: {
         'رسوم الطلاب': 45000,
         'تبرعات': 20000,
@@ -180,7 +211,7 @@ export const AssociationIncome = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> {/* Adjusted grid for 4 items */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-gray-300">إجمالي الإيرادات:</span>
@@ -202,12 +233,49 @@ export const AssociationIncome = () => {
                   </div>
                   <p className="text-2xl font-bold text-blue-400">{summary.netIncome.toLocaleString()} ل.س</p>
                 </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-gray-300">هامش صافي الربح:</span>
+                    <Percent className="w-4 h-4 text-purple-400" /> {/* Added Percent Icon */}
+                  </div>
+                  <p className="text-2xl font-bold text-purple-400">
+                    {summary.totalIncome > 0
+                      ? ((summary.netIncome / summary.totalIncome) * 100).toFixed(2) + '%'
+                      : '0.00%'}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         )}
 
         {/* الرسوم البيانية */}
+        {/* New Income vs Expenses Trend Chart */}
+        {summary && summary.incomeExpenseTrend && summary.incomeExpenseTrend.length > 0 && (
+          <Card className="card-modern mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl text-white">اتجاه الإيرادات والمصروفات الشهرية</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={summary.incomeExpenseTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
+                  <XAxis dataKey="month" stroke="#A0AEC0" />
+                  <YAxis stroke="#A0AEC0" />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2D3748', border: 'none', borderRadius: '0.5rem' }}
+                    labelStyle={{ color: '#E2E8F0' }}
+                    itemStyle={{ color: '#A0AEC0' }}
+                  />
+                  <Legend wrapperStyle={{ color: '#A0AEC0' }} />
+                  <Line type="monotone" dataKey="income" name="الإيرادات" stroke="#34D399" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey="expenses" name="المصروفات" stroke="#F87171" activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* رسم بياني خطي للإيرادات */}
           <Card className="card-modern">
